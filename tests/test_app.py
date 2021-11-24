@@ -22,18 +22,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-if __name__ == "__main__" and __package__ is None:
-    from sys import path
-    from os.path import dirname as dir
-
-    path.append(dir(path[0]))
-    __package__ = "katsuyou"
-
 from katsuyou import conjugate
 from katsuyou.util import matcher
 from queue import Queue
 
-if __name__=="__main__" :
+def test_app() :
     adjective = conjugate.Adjective("短い", True)
     verb_ichidan = conjugate.Verb("いる", True, True)
     verb_godan = conjugate.Verb("すます", False, True)
@@ -51,3 +44,6 @@ if __name__=="__main__" :
         exp = expected.get()
         assert (s,e) == exp
     assert expected.empty()
+
+if __name__=="__main__" :
+    test_app()
