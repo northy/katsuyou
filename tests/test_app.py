@@ -22,10 +22,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import conjugate
-from conjugate import ichidan_verb
-from conjugate import godan_verb
-from util import matcher
+if __name__ == "__main__" and __package__ is None:
+    from sys import path
+    from os.path import dirname as dir
+
+    path.append(dir(path[0]))
+    __package__ = "katsuyou"
+
+from katsuyou import conjugate
+from katsuyou.util import matcher
+from queue import Queue
 
 if __name__=="__main__" :
     adjective = conjugate.Adjective("短い", True)
@@ -35,5 +41,13 @@ if __name__=="__main__" :
     dictionary = list(adjective.forms.unpack())+list(verb_ichidan.forms.unpack())+list(verb_godan.forms.unpack())
     m = matcher.Matcher(words=dictionary)
     string = "すましていてもいるよ"
+    expected = Queue()
+    expected.put((0,4))
+    expected.put((4,6))
+    expected.put((7,9))
+    i = 0
     for s,e in m.longest_matches(string) :
         print(s,e,string[s:e])
+        exp = expected.get()
+        assert (s,e) == exp
+    assert expected.empty()
