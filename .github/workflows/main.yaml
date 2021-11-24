@@ -30,6 +30,9 @@ jobs:
       - name: Test with pytest
         run: |
           pytest
+      - name: Build dist files
+        run : |
+          python -m build
       - name: Publish package to test pypi
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
