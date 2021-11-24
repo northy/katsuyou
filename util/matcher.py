@@ -123,7 +123,7 @@ class Matcher(object) :
             for v in self._trie_c[u].values() : queue.append(v)
             i+=1
         
-    def match(self, string:str) :
+    def matches(self, string:str) :
         if self._trie is None : self._build_trie()
 
         automaton = 0
@@ -151,13 +151,11 @@ class Matcher(object) :
 
     def longest_matches(self, string:str) :
         lbs = {}
-        for s,e in self.match(string) :
+        for s,e in self.matches(string) :
             lbs[s] = max(lbs.setdefault(s, 0), e)
         
-        dll = deque(sorted(lbs.items()))
-        li = dll.popleft()
-        yield li
-        li = li[1]
+        dll = sorted(lbs.items())
+        li = -1
         for s,e in dll :
             if s>=li :
                 yield s, e
