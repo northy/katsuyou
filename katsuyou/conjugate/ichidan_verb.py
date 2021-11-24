@@ -24,9 +24,9 @@
 
 from .util.bundle import Bundle
 from . import i_adjective
-from functools import cache
+from functools import lru_cache
 
-@cache
+@lru_cache(maxsize=None)
 def stem_neutral_te_form(word:str) :
     return word[:-1]+"て"
 
@@ -36,11 +36,11 @@ def stem_neutral_i_stem(word:str) :
 def plain_positive_nonpast(word:str) :
     return word
 
-@cache
+@lru_cache(maxsize=None)
 def plain_positive_past(word:str) :
     return word[:-1]+"た"
 
-@cache
+@lru_cache(maxsize=None)
 def plain_positive_optative(word:str) :
     return word[:-1]+"たい"
 
@@ -53,48 +53,48 @@ def plain_positive_optative_te_form(word:str) :
 def plain_positive_volitional(word:str) :
     return word[:-1]+"よう"
 
-@cache
+@lru_cache(maxsize=None)
 def plain_positive_ba_conditional(word:str) :
     return word[:-1]+"れば"
 
 def plain_positive_tara_conditional(word:str) :
     return plain_positive_past(word)+"ら"
 
-@cache
+@lru_cache(maxsize=None)
 def plain_positive_receptive(word:str) :
     return word[:-1]+"られる"
 
-@cache
+@lru_cache(maxsize=None)
 def plain_positive_causative(word:str) :
     return word[:-1]+"らせる"
 
-@cache
+@lru_cache(maxsize=None)
 def plain_positive_potential(word:str) :
     return plain_positive_receptive(word)
 
 def plain_positive_imperative(word:str) :
     return word[:-1]+"ろ"
 
-@cache
+@lru_cache(maxsize=None)
 def plain_positive_progressive(word:str) :
     return stem_neutral_te_form(word)+"いる"
 
 def plain_positive_past_progressive(word:str) :
     return plain_positive_past(plain_positive_progressive(word))
 
-@cache
+@lru_cache(maxsize=None)
 def plain_positive_past_presumptive(word:str) :
     return plain_positive_past(word)+"ろう"
 
-@cache
+@lru_cache(maxsize=None)
 def plain_negative_nonpast(word:str) :
     return word[:-1]+"ない"
 
-@cache
+@lru_cache(maxsize=None)
 def plain_negative_past(word:str) :
     return i_adjective.plain_positive_past(plain_negative_nonpast(word))
 
-@cache
+@lru_cache(maxsize=None)
 def plain_negative_optative(word:str) :
     return i_adjective.plain_negative_nonpast(plain_positive_optative(word))
 
@@ -128,11 +128,11 @@ def plain_negative_progressive(word:str) :
 def plain_negative_past_progressive(word:str) :
     return plain_negative_past(plain_positive_progressive(word))
 
-@cache
+@lru_cache(maxsize=None)
 def polite_positive_nonpast(word:str) :
     return word[:-1]+"ます"
 
-@cache
+@lru_cache(maxsize=None)
 def polite_positive_past(word:str) :
     return word[:-1]+"ました"
 
@@ -157,11 +157,11 @@ def polite_positive_progressive(word:str) :
 def polite_positive_past_progressive(word:str) :
     return polite_positive_past(plain_positive_progressive(word))
 
-@cache
+@lru_cache(maxsize=None)
 def polite_negative_nonpast(word:str) :
     return word[:-1]+"ません"
 
-@cache
+@lru_cache(maxsize=None)
 def polite_negative_past(word:str) :
     return polite_negative_nonpast(word)+"でした"
 

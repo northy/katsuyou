@@ -24,9 +24,9 @@
 
 from .util.bundle import Bundle
 from . import i_adjective, ichidan_verb
-from functools import cache
+from functools import lru_cache
 
-@cache
+@lru_cache(maxsize=None)
 def stem_neutral_te_form(word:str) :
     if word=="行く" or word=="いく" :
         return word[:-1]+"って"
@@ -43,7 +43,7 @@ def stem_neutral_te_form(word:str) :
     }
     return word[:-1]+translate[word[-1]]
 
-@cache
+@lru_cache(maxsize=None)
 def stem_neutral_a_stem(word:str) :
     translate = {
         "く": "か",
@@ -58,7 +58,7 @@ def stem_neutral_a_stem(word:str) :
     }
     return word[:-1]+translate[word[-1]]
 
-@cache
+@lru_cache(maxsize=None)
 def stem_neutral_i_stem(word:str) :
     if word=="御座る" or word=="ござる" :
         return word[:-1]+"い"
@@ -75,7 +75,7 @@ def stem_neutral_i_stem(word:str) :
     }
     return word[:-1]+translate[word[-1]]
 
-@cache
+@lru_cache(maxsize=None)
 def stem_neutral_e_stem(word:str) :
     translate = {
         "く": "け",
@@ -90,7 +90,7 @@ def stem_neutral_e_stem(word:str) :
     }
     return word[:-1]+translate[word[-1]]
 
-@cache
+@lru_cache(maxsize=None)
 def stem_neutral_o_stem(word:str) :
     translate = {
         "く": "こ",
@@ -108,7 +108,7 @@ def stem_neutral_o_stem(word:str) :
 def plain_positive_nonpast(word:str) :
     return word
 
-@cache
+@lru_cache(maxsize=None)
 def plain_positive_past(word:str) :
     translate = {
         "て": "た",
@@ -117,7 +117,7 @@ def plain_positive_past(word:str) :
     stem = stem_neutral_te_form(word)
     return stem[:-1]+translate[stem[-1]]
 
-@cache
+@lru_cache(maxsize=None)
 def plain_positive_optative(word:str) :
     return stem_neutral_i_stem(word)+"たい"
 
@@ -130,29 +130,29 @@ def plain_positive_optative_te_form(word:str) :
 def plain_positive_volitional(word:str) :
     return stem_neutral_o_stem(word)+"う"
 
-@cache
+@lru_cache(maxsize=None)
 def plain_positive_ba_conditional(word:str) :
     return stem_neutral_e_stem(word)+"ば"
 
 def plain_positive_tara_conditional(word:str) :
     return plain_positive_past(word)+"ら"
 
-@cache
+@lru_cache(maxsize=None)
 def plain_positive_receptive(word:str) :
     return stem_neutral_a_stem(word)+"れる"
 
-@cache
+@lru_cache(maxsize=None)
 def plain_positive_causative(word:str) :
     return stem_neutral_a_stem(word)+"せる"
 
-@cache
+@lru_cache(maxsize=None)
 def plain_positive_potential(word:str) :
     return stem_neutral_e_stem(word)+"る"
 
 def plain_positive_imperative(word:str) :
     return stem_neutral_e_stem(word)
 
-@cache
+@lru_cache(maxsize=None)
 def plain_positive_progressive(word:str) :
     return stem_neutral_te_form(word)+"いる"
 
@@ -162,15 +162,15 @@ def plain_positive_past_progressive(word:str) :
 def plain_positive_past_presumptive(word:str) :
     return plain_positive_past(word)+"ろう"
 
-@cache
+@lru_cache(maxsize=None)
 def plain_negative_nonpast(word:str) :
     return stem_neutral_a_stem(word)+"ない"
 
-@cache
+@lru_cache(maxsize=None)
 def plain_negative_past(word:str) :
     return i_adjective.plain_positive_past(plain_negative_nonpast(word))
 
-@cache
+@lru_cache(maxsize=None)
 def plain_negative_optative(word:str) :
     return i_adjective.plain_negative_nonpast(plain_positive_optative(word))
 
@@ -204,11 +204,11 @@ def plain_negative_progressive(word:str) :
 def plain_negative_past_progressive(word:str) :
     return ichidan_verb.plain_negative_past(plain_positive_progressive(word))
 
-@cache
+@lru_cache(maxsize=None)
 def polite_positive_nonpast(word:str) :
     return stem_neutral_i_stem(word)+"ます"
 
-@cache
+@lru_cache(maxsize=None)
 def polite_positive_past(word:str) :
     return plain_positive_past(polite_positive_nonpast(word))
 
@@ -233,11 +233,11 @@ def polite_positive_progressive(word:str) :
 def polite_positive_past_progressive(word:str) :
     return ichidan_verb.polite_positive_past(plain_positive_progressive(word))
 
-@cache
+@lru_cache(maxsize=None)
 def polite_negative_nonpast(word:str) :
     return polite_positive_nonpast(word)+"せん"
 
-@cache
+@lru_cache(maxsize=None)
 def polite_negative_past(word:str) :
     return polite_negative_nonpast(word)+"でした"
 

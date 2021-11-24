@@ -23,12 +23,12 @@
 # SOFTWARE.
 
 from .util.bundle import Bundle
-from functools import cache
+from functools import lru_cache
 
 def plain_positive_nonpast(word) :
     return word
 
-@cache
+@lru_cache(maxsize=None)
 def plain_positive_past(word) :
     return word[:-1]+"かった"
 
@@ -41,7 +41,7 @@ def plain_positive_ba_conditional(word) :
 def plain_positive_te_form(word) :
     return word[:-1]+"くて"
 
-@cache
+@lru_cache(maxsize=None)
 def plain_negative_nonpast(word) :
     return word[:-1]+"くない"
 
@@ -66,7 +66,7 @@ def polite_positive_past(word) :
 def polite_positive_presumptive(word) :
     return word+"でしょう"
 
-@cache
+@lru_cache(maxsize=None)
 def polite_negative_nonpast(word) :
     return word[:-1]+"くありません"
 
