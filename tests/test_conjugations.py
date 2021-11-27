@@ -149,9 +149,9 @@ def test_kuru() :
     c.forms.assert_equal(expected)
     
 def test_ii() :
-    expected = {'stem': {'neutral': {'connective':'よく'}}, 'plain': {'positive': {'past': 'よかった', 'ba_conditional': 'よければ', 'te_form': 'よくて', 'nonpast': 'いい', 'presumptive': 'いいだろう'}, 'negative': {'nonpast': 'よくない', 'past': 'よくなかった', 'presumptive': 'よかっただろう', 'ba_conditional': 'よくなければ', 'te_form': 'よくなくて'}}, 'polite': {'positive': {'nonpast': 'いいです', 'past': 'よかったです', 'presumptive': 'いいでしょう'}, 'negative': {'nonpast': 'よくありません', 'past': 'よくありませんでした', 'presumptive': 'よくないでしょう'}}}
+    expected = {'stem': {'neutral': {'connective': 'かっこよく'}}, 'plain': {'positive': {'past': 'かっこよかった', 'ba_conditional': 'かっこよければ', 'nonpast': 'かっこいい', 'presumptive': 'かっこいいだろう', 'te_form': 'かっこよくて'}, 'negative': {'nonpast': 'かっこよくない', 'past': 'かっこよくなかった', 'presumptive': 'かっこよかっただろう', 'ba_conditional': 'かっこよくなければ', 'te_form': 'かっこよくなくて'}}, 'polite': {'positive': {'nonpast': 'かっこいいです', 'past': 'かっこよかったです', 'presumptive': 'かっこいいでしょう'}, 'negative': {'nonpast': 'かっこよくありません', 'past': 'かっこよくありませんでした', 'presumptive': 'かっこよくないでしょう'}}}
     
-    c = conjugate.Adjective("いい", True)
+    c = conjugate.Adjective("かっこいい", True)
 
     c.forms.assert_equal(expected)
 
