@@ -56,7 +56,26 @@ class Bundle(dict):
     def update(self, other):
         for k, v in other.items() :
             if isinstance(v, dict):
-                self[k] = Bundle()
+                if k not in self or not isinstance(self[k],Bundle) : self[k] = Bundle()
                 self[k].update(v)
             else:
                 self[k] = v
+    
+    def recursive_set(self, *args) :
+        assert len(args)>=2, "No key and element"
+        ptr = self
+        for i in range(len(args)-2) :
+            k = args[i]
+            if k not in ptr or not isinstance(ptr[k],Bundle) : ptr[k] = Bundle()
+            ptr = ptr[k]
+        ptr[args[-2]] = args[-1]
+    
+    def recursive_get(self, *args) :
+        assert len(args)>=1, "No key"
+
+        ptr = self
+        for k in args :
+            if k not in ptr : return None
+            if not isinstance(ptr[k], dict) : return ptr[k]
+            ptr = ptr[k]
+        return ptr.setdefault(k, None)

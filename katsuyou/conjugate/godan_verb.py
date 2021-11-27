@@ -24,12 +24,16 @@
 
 from .util.bundle import Bundle
 from . import i_adjective, ichidan_verb
-from functools import lru_cache
 
-@lru_cache(maxsize=None)
-def stem_neutral_te_form(word:str) :
+def stem_neutral_te_form(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("stem","neutral","te_form")
+        if cache is not None : return cache
+
     if word=="行く" or word=="いく" :
-        return word[:-1]+"って"
+        ret = word[:-1]+"って"
+        if forms is not None : forms.recursive_set("stem","neutral","te_form",ret)
+        return ret
     translate = {
         "く": "いて",
         "ぐ": "いで",
@@ -41,10 +45,15 @@ def stem_neutral_te_form(word:str) :
         "つ": "って",
         "る": "って"
     }
-    return word[:-1]+translate[word[-1]]
+    ret = word[:-1]+translate[word[-1]]
+    if forms is not None : forms.recursive_set("stem","neutral","te_form",ret)
+    return ret
 
-@lru_cache(maxsize=None)
-def stem_neutral_a_stem(word:str) :
+def stem_neutral_a_stem(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("stem","neutral","a_stem")
+        if cache is not None : return cache
+
     translate = {
         "く": "か",
         "ぐ": "が",
@@ -56,10 +65,15 @@ def stem_neutral_a_stem(word:str) :
         "つ": "た",
         "る": "ら"
     }
-    return word[:-1]+translate[word[-1]]
+    ret = word[:-1]+translate[word[-1]]
+    if forms is not None : forms.recursive_set("stem","neutral","a_stem",ret)
+    return ret
 
-@lru_cache(maxsize=None)
-def stem_neutral_i_stem(word:str) :
+def stem_neutral_i_stem(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("stem","neutral","i_stem")
+        if cache is not None : return cache
+
     if word=="御座る" or word=="ござる" :
         return word[:-1]+"い"
     translate = {
@@ -73,10 +87,15 @@ def stem_neutral_i_stem(word:str) :
         "つ": "ち",
         "る": "り"
     }
-    return word[:-1]+translate[word[-1]]
+    ret = word[:-1]+translate[word[-1]]
+    if forms is not None : forms.recursive_set("stem","neutral","i_stem",ret)
+    return ret
 
-@lru_cache(maxsize=None)
-def stem_neutral_e_stem(word:str) :
+def stem_neutral_e_stem(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("stem","neutral","e_stem")
+        if cache is not None : return cache
+
     translate = {
         "く": "け",
         "ぐ": "げ",
@@ -88,10 +107,15 @@ def stem_neutral_e_stem(word:str) :
         "つ": "て",
         "る": "れ"
     }
-    return word[:-1]+translate[word[-1]]
+    ret = word[:-1]+translate[word[-1]]
+    if forms is not None : forms.recursive_set("stem","neutral","e_stem",ret)
+    return ret
 
-@lru_cache(maxsize=None)
-def stem_neutral_o_stem(word:str) :
+def stem_neutral_o_stem(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("stem","neutral","o_stem")
+        if cache is not None : return cache
+
     translate = {
         "く": "こ",
         "ぐ": "ご",
@@ -103,167 +127,437 @@ def stem_neutral_o_stem(word:str) :
         "つ": "と",
         "る": "ろ"
     }
-    return word[:-1]+translate[word[-1]]
+    ret = word[:-1]+translate[word[-1]]
+    if forms is not None : forms.recursive_set("stem","neutral","o_stem",ret)
+    return ret
 
-def plain_positive_nonpast(word:str) :
-    return word
+def plain_positive_nonpast(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("plain","positive","nonpast")
+        if cache is not None : return cache
 
-@lru_cache(maxsize=None)
-def plain_positive_past(word:str) :
+    ret = word
+    if forms is not None : forms.recursive_set("plain","positive","nonpast",ret)
+    return ret
+
+def plain_positive_past(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("plain","positive","past")
+        if cache is not None : return cache
+
     translate = {
         "て": "た",
         "で": "だ"
     }
-    stem = stem_neutral_te_form(word)
-    return stem[:-1]+translate[stem[-1]]
+    stem = stem_neutral_te_form(word, forms)
+    ret = stem[:-1]+translate[stem[-1]]
+    if forms is not None : forms.recursive_set("plain","positive","past",ret)
+    return ret
 
-@lru_cache(maxsize=None)
-def plain_positive_optative(word:str) :
-    return stem_neutral_i_stem(word)+"たい"
+def plain_positive_optative(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("plain","positive","optative")
+        if cache is not None : return cache
 
-def plain_positive_past_optative(word:str) :
-    return i_adjective.plain_positive_past(plain_positive_optative(word))
+    ret = stem_neutral_i_stem(word, forms)+"たい"
+    if forms is not None : forms.recursive_set("plain","positive","optative",ret)
+    return ret
 
-def plain_positive_optative_te_form(word:str) :
-    return i_adjective.plain_positive_te_form(plain_positive_optative(word))
+def plain_positive_past_optative(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("plain","positive","past_optative")
+        if cache is not None : return cache
 
-def plain_positive_volitional(word:str) :
-    return stem_neutral_o_stem(word)+"う"
+    ret = i_adjective.plain_positive_past(plain_positive_optative(word, forms), None)
+    if forms is not None : forms.recursive_set("plain","positive","past_optative",ret)
+    return ret
 
-@lru_cache(maxsize=None)
-def plain_positive_ba_conditional(word:str) :
-    return stem_neutral_e_stem(word)+"ば"
+def plain_positive_optative_te_form(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("plain","positive","optative_te_form")
+        if cache is not None : return cache
 
-def plain_positive_tara_conditional(word:str) :
-    return plain_positive_past(word)+"ら"
+    ret = i_adjective.plain_positive_te_form(plain_positive_optative(word, forms), None)
+    if forms is not None : forms.recursive_set("plain","positive","optative_te_form",ret)
+    return ret
 
-@lru_cache(maxsize=None)
-def plain_positive_receptive(word:str) :
-    return stem_neutral_a_stem(word)+"れる"
+def plain_positive_volitional(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("plain","positive","volitional")
+        if cache is not None : return cache
 
-@lru_cache(maxsize=None)
-def plain_positive_causative(word:str) :
-    return stem_neutral_a_stem(word)+"せる"
+    ret = stem_neutral_o_stem(word, forms)+"う"
+    if forms is not None : forms.recursive_set("plain","positive","volitional",ret)
+    return ret
 
-@lru_cache(maxsize=None)
-def plain_positive_potential(word:str) :
-    return stem_neutral_e_stem(word)+"る"
+def plain_positive_ba_conditional(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("plain","positive","ba_conditional")
+        if cache is not None : return cache
 
-def plain_positive_imperative(word:str) :
-    return stem_neutral_e_stem(word)
+    ret = stem_neutral_e_stem(word, forms)+"ば"
+    if forms is not None : forms.recursive_set("plain","positive","ba_conditional",ret)
+    return ret
 
-@lru_cache(maxsize=None)
-def plain_positive_progressive(word:str) :
-    return stem_neutral_te_form(word)+"いる"
+def plain_positive_tara_conditional(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("plain","positive","tara_conditional")
+        if cache is not None : return cache
 
-def plain_positive_past_progressive(word:str) :
-    return ichidan_verb.plain_positive_past(plain_positive_progressive(word))
+    ret = plain_positive_past(word, forms)+"ら"
+    if forms is not None : forms.recursive_set("plain","positive","tara_conditional",ret)
+    return ret
 
-def plain_positive_past_presumptive(word:str) :
-    return plain_positive_past(word)+"ろう"
+def plain_positive_receptive(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("plain","positive","receptive")
+        if cache is not None : return cache
 
-@lru_cache(maxsize=None)
-def plain_negative_nonpast(word:str) :
-    return stem_neutral_a_stem(word)+"ない"
+    ret = stem_neutral_a_stem(word, forms)+"れる"
+    if forms is not None : forms.recursive_set("plain","positive","receptive",ret)
+    return ret
 
-@lru_cache(maxsize=None)
-def plain_negative_past(word:str) :
-    return i_adjective.plain_positive_past(plain_negative_nonpast(word))
+def plain_positive_causative(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("plain","positive","causative")
+        if cache is not None : return cache
 
-@lru_cache(maxsize=None)
-def plain_negative_optative(word:str) :
-    return i_adjective.plain_negative_nonpast(plain_positive_optative(word))
+    ret = stem_neutral_a_stem(word, forms)+"せる"
+    if forms is not None : forms.recursive_set("plain","positive","causative",ret)
+    return ret
 
-def plain_negative_past_optative(word:str) :
-    return i_adjective.plain_negative_past(plain_positive_optative(word))
+def plain_positive_potential(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("plain","positive","potential")
+        if cache is not None : return cache
 
-def plain_negative_optative_te_form(word:str) :
-    return i_adjective.plain_negative_te_form(plain_positive_optative(word))
+    ret = stem_neutral_e_stem(word, forms)+"る"
+    if forms is not None : forms.recursive_set("plain","positive","potential",ret)
+    return ret
 
-def plain_negative_ba_conditional(word:str) :
-    return i_adjective.plain_positive_ba_conditional(plain_negative_past(word))
+def plain_positive_imperative(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("plain","positive","imperative")
+        if cache is not None : return cache
 
-def plain_negative_tara_conditional(word:str) :
-    return plain_negative_past(word)+"ら"
+    ret = stem_neutral_e_stem(word, forms)
+    if forms is not None : forms.recursive_set("plain","positive","imperative",ret)
+    return ret
 
-def plain_negative_receptive(word:str) :
-    return ichidan_verb.plain_negative_nonpast(plain_positive_receptive(word))
+def plain_positive_progressive(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("plain","positive","progressive")
+        if cache is not None : return cache
 
-def plain_negative_causative(word:str) :
-    return ichidan_verb.plain_negative_nonpast(plain_positive_causative(word))
+    ret = stem_neutral_te_form(word, forms)+"いる"
+    if forms is not None : forms.recursive_set("plain","positive","progressive",ret)
+    return ret
 
-def plain_negative_potential(word:str) :
-    return ichidan_verb.plain_negative_nonpast(plain_positive_potential(word))
+def plain_positive_past_progressive(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("plain","positive","past_progressive")
+        if cache is not None : return cache
 
-def plain_negative_imperative(word:str) :
-    return word+"な"
+    ret = ichidan_verb.plain_positive_past(plain_positive_progressive(word, forms), None)
+    if forms is not None : forms.recursive_set("plain","positive","past_progressive",ret)
+    return ret
 
-def plain_negative_progressive(word:str) :
-    return ichidan_verb.plain_negative_nonpast(plain_positive_progressive(word))
+def plain_positive_past_presumptive(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("plain","positive","past_presumptive")
+        if cache is not None : return cache
 
-def plain_negative_past_progressive(word:str) :
-    return ichidan_verb.plain_negative_past(plain_positive_progressive(word))
+    ret = plain_positive_past(word, forms)+"ろう"
+    if forms is not None : forms.recursive_set("plain","positive","past_presumptive",ret)
+    return ret
 
-@lru_cache(maxsize=None)
-def polite_positive_nonpast(word:str) :
-    return stem_neutral_i_stem(word)+"ます"
+def plain_negative_nonpast(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("plain","negative","nonpast")
+        if cache is not None : return cache
 
-@lru_cache(maxsize=None)
-def polite_positive_past(word:str) :
-    return plain_positive_past(polite_positive_nonpast(word))
+    ret = stem_neutral_a_stem(word, forms)+"ない"
+    if forms is not None : forms.recursive_set("plain","negative","nonpast",ret)
+    return ret
 
-def polite_positive_volitional(word:str) :
-    return polite_positive_nonpast(word)[:-1]+"しょう"
+def plain_negative_past(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("plain","negative","past")
+        if cache is not None : return cache
 
-def polite_positive_tara_conditional(word:str) :
-    return polite_positive_past(word)+"ら"
+    ret = i_adjective.plain_positive_past(plain_negative_nonpast(word, forms), None)
+    if forms is not None : forms.recursive_set("plain","negative","past",ret)
+    return ret
 
-def polite_positive_receptive(word:str) :
-    return ichidan_verb.polite_positive_nonpast(plain_positive_receptive(word))
+def plain_negative_optative(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("plain","negative","optative")
+        if cache is not None : return cache
 
-def polite_positive_causative(word:str) :
-    return ichidan_verb.polite_positive_nonpast(plain_positive_causative(word))
+    ret = i_adjective.plain_negative_nonpast(plain_positive_optative(word, forms), None)
+    if forms is not None : forms.recursive_set("plain","negative","optative",ret)
+    return ret
 
-def polite_positive_potential(word:str) :
-    return ichidan_verb.polite_positive_nonpast(plain_positive_potential(word))
+def plain_negative_past_optative(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("plain","negative","past_optative")
+        if cache is not None : return cache
 
-def polite_positive_progressive(word:str) :
-    return ichidan_verb.polite_positive_nonpast(plain_positive_progressive(word))
+    ret = i_adjective.plain_negative_past(plain_positive_optative(word, forms), None)
+    if forms is not None : forms.recursive_set("plain","negative","past_optative",ret)
+    return ret
 
-def polite_positive_past_progressive(word:str) :
-    return ichidan_verb.polite_positive_past(plain_positive_progressive(word))
+def plain_negative_optative_te_form(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("plain","negative","optative_te_form")
+        if cache is not None : return cache
 
-@lru_cache(maxsize=None)
-def polite_negative_nonpast(word:str) :
-    return polite_positive_nonpast(word)+"せん"
+    ret = i_adjective.plain_negative_te_form(plain_positive_optative(word, forms), None)
+    if forms is not None : forms.recursive_set("plain","negative","optative_te_form",ret)
+    return ret
 
-@lru_cache(maxsize=None)
-def polite_negative_past(word:str) :
-    return polite_negative_nonpast(word)+"でした"
+def plain_negative_ba_conditional(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("plain","negative","ba_conditional")
+        if cache is not None : return cache
 
-def polite_negative_optative(word:str) :
-    return i_adjective.polite_negative_nonpast(plain_positive_optative(word))
+    ret = i_adjective.plain_positive_ba_conditional(plain_negative_past(word, forms), None)
+    if forms is not None : forms.recursive_set("plain","negative","ba_conditional",ret)
+    return ret
 
-def polite_negative_tara_conditional(word:str) :
-    return polite_negative_past(word)+"ら"
+def plain_negative_tara_conditional(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("plain","negative","tara_conditional")
+        if cache is not None : return cache
 
-def polite_negative_receptive(word:str) :
-    return ichidan_verb.polite_negative_nonpast(plain_positive_receptive(word))
+    ret = plain_negative_past(word, forms)+"ら"
+    if forms is not None : forms.recursive_set("plain","negative","tara_conditional",ret)
+    return ret
 
-def polite_negative_causative(word:str) :
-    return ichidan_verb.polite_negative_nonpast(plain_positive_causative(word))
+def plain_negative_receptive(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("plain","negative","receptive")
+        if cache is not None : return cache
 
-def polite_negative_potential(word:str) :
-    return ichidan_verb.polite_negative_nonpast(plain_positive_potential(word))
+    ret = ichidan_verb.plain_negative_nonpast(plain_positive_receptive(word, forms), None)
+    if forms is not None : forms.recursive_set("plain","negative","receptive",ret)
+    return ret
 
-def polite_negative_imperative(word:str) :
-    return plain_negative_nonpast(word)+"で"
+def plain_negative_causative(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("plain","negative","causative")
+        if cache is not None : return cache
 
-def polite_negative_progressive(word:str) :
-    return ichidan_verb.polite_negative_nonpast(plain_positive_progressive(word))
+    ret = ichidan_verb.plain_negative_nonpast(plain_positive_causative(word, forms), None)
+    if forms is not None : forms.recursive_set("plain","negative","causative",ret)
+    return ret
 
-def polite_negative_past_progressive(word:str) :
-    return ichidan_verb.polite_negative_past(plain_positive_progressive(word))
+def plain_negative_potential(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("plain","negative","potential")
+        if cache is not None : return cache
+
+    ret = ichidan_verb.plain_negative_nonpast(plain_positive_potential(word, forms), None)
+    if forms is not None : forms.recursive_set("plain","negative","potential",ret)
+    return ret
+
+def plain_negative_imperative(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("plain","negative","imperative")
+        if cache is not None : return cache
+
+    ret = word+"な"
+    if forms is not None : forms.recursive_set("plain","negative","imperative",ret)
+    return ret
+
+def plain_negative_progressive(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("plain","negative","progressive")
+        if cache is not None : return cache
+
+    ret = ichidan_verb.plain_negative_nonpast(plain_positive_progressive(word, forms), None)
+    if forms is not None : forms.recursive_set("plain","negative","progressive",ret)
+    return ret
+
+def plain_negative_past_progressive(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("plain","negative","past_progressive")
+        if cache is not None : return cache
+
+    ret = ichidan_verb.plain_negative_past(plain_positive_progressive(word, forms), None)
+    if forms is not None : forms.recursive_set("plain","negative","past_progressive",ret)
+    return ret
+
+def polite_positive_nonpast(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("polite","positive","nonpast")
+        if cache is not None : return cache
+
+    ret = stem_neutral_i_stem(word, forms)+"ます"
+    if forms is not None : forms.recursive_set("polite","positive","nonpast",ret)
+    return ret
+
+def polite_positive_past(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("polite","positive","past")
+        if cache is not None : return cache
+
+    ret = plain_positive_past(polite_positive_nonpast(word, forms), None)
+    if forms is not None : forms.recursive_set("polite","positive","past",ret)
+    return ret
+
+def polite_positive_volitional(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("polite","positive","volitional")
+        if cache is not None : return cache
+
+    ret = polite_positive_nonpast(word, forms)[:-1]+"しょう"
+    if forms is not None : forms.recursive_set("polite","positive","volitional",ret)
+    return ret
+
+def polite_positive_tara_conditional(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("polite","positive","tara_conditional")
+        if cache is not None : return cache
+
+    ret = polite_positive_past(word, forms)+"ら"
+    if forms is not None : forms.recursive_set("polite","positive","tara_conditional",ret)
+    return ret
+
+def polite_positive_receptive(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("polite","positive","receptive")
+        if cache is not None : return cache
+
+    ret = ichidan_verb.polite_positive_nonpast(plain_positive_receptive(word, forms), None)
+    if forms is not None : forms.recursive_set("polite","positive","receptive",ret)
+    return ret
+
+def polite_positive_causative(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("polite","positive","causative")
+        if cache is not None : return cache
+
+    ret = ichidan_verb.polite_positive_nonpast(plain_positive_causative(word, forms), None)
+    if forms is not None : forms.recursive_set("polite","positive","causative",ret)
+    return ret
+
+def polite_positive_potential(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("polite","positive","potential")
+        if cache is not None : return cache
+
+    ret = ichidan_verb.polite_positive_nonpast(plain_positive_potential(word, forms), None)
+    if forms is not None : forms.recursive_set("polite","positive","potential",ret)
+    return ret
+
+def polite_positive_progressive(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("polite","positive","progressive")
+        if cache is not None : return cache
+
+    ret = ichidan_verb.polite_positive_nonpast(plain_positive_progressive(word, forms), None)
+    if forms is not None : forms.recursive_set("polite","positive","progressive",ret)
+    return ret
+
+def polite_positive_past_progressive(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("polite","positive","past_progressive")
+        if cache is not None : return cache
+
+    ret = ichidan_verb.polite_positive_past(plain_positive_progressive(word, forms), None)
+    if forms is not None : forms.recursive_set("polite","positive","past_progressive",ret)
+    return ret
+
+def polite_negative_nonpast(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("polite","negative","nonpast")
+        if cache is not None : return cache
+
+    ret = polite_positive_nonpast(word, forms)+"せん"
+    if forms is not None : forms.recursive_set("polite","negative","nonpast",ret)
+    return ret
+
+def polite_negative_past(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("polite","negative","past")
+        if cache is not None : return cache
+
+    ret = polite_negative_nonpast(word, forms)+"でした"
+    if forms is not None : forms.recursive_set("polite","negative","past",ret)
+    return ret
+
+def polite_negative_optative(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("polite","negative","optative")
+        if cache is not None : return cache
+
+    ret = i_adjective.polite_negative_nonpast(plain_positive_optative(word, forms), None)
+    if forms is not None : forms.recursive_set("polite","negative","optative",ret)
+    return ret
+
+def polite_negative_tara_conditional(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("polite","negative","tara_conditional")
+        if cache is not None : return cache
+
+    ret = polite_negative_past(word, forms)+"ら"
+    if forms is not None : forms.recursive_set("polite","negative","tara_conditional",ret)
+    return ret
+
+def polite_negative_receptive(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("polite","negative","receptive")
+        if cache is not None : return cache
+
+    ret = ichidan_verb.polite_negative_nonpast(plain_positive_receptive(word, forms), None)
+    if forms is not None : forms.recursive_set("polite","negative","receptive",ret)
+    return ret
+
+def polite_negative_causative(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("polite","negative","causative")
+        if cache is not None : return cache
+
+    ret = ichidan_verb.polite_negative_nonpast(plain_positive_causative(word, forms), None)
+    if forms is not None : forms.recursive_set("polite","negative","causative",ret)
+    return ret
+
+def polite_negative_potential(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("polite","negative","potential")
+        if cache is not None : return cache
+
+    ret = ichidan_verb.polite_negative_nonpast(plain_positive_potential(word, forms), None)
+    if forms is not None : forms.recursive_set("polite","negative","potential",ret)
+    return ret
+
+def polite_negative_imperative(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("polite","negative","imperative")
+        if cache is not None : return cache
+
+    ret = plain_negative_nonpast(word, forms)+"で"
+    if forms is not None : forms.recursive_set("polite","negative","imperative",ret)
+    return ret
+
+def polite_negative_progressive(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("polite","negative","progressive")
+        if cache is not None : return cache
+
+    ret = ichidan_verb.polite_negative_nonpast(plain_positive_progressive(word, forms), None)
+    if forms is not None : forms.recursive_set("polite","negative","progressive",ret)
+    return ret
+
+def polite_negative_past_progressive(word:str, forms:Bundle) :
+    if forms is not None :
+        cache = forms.recursive_get("polite","negative","past_progressive")
+        if cache is not None : return cache
+
+    ret = ichidan_verb.polite_negative_past(plain_positive_progressive(word, forms), None)
+    if forms is not None : forms.recursive_set("polite","negative","past_progressive",ret)
+    return ret
 
 lookup = Bundle(
     stem = Bundle(

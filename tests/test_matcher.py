@@ -22,6 +22,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+DEBUG = True
+
+if DEBUG :
+    import sys
+    sys.path.insert(0, "..")
+
 from katsuyou import conjugate
 from katsuyou.util import matcher
 from queue import Queue

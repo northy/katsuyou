@@ -27,7 +27,7 @@ from .util.bundle import Bundle
 
 class Adjective(object) :
     def __init__(self, word:str, conjugateAll:bool=False) :
-        assert word[-1]=="い"
+        assert word[-1]=="い", "Word passed as argument is not an adjective"
 
         self._lookup = i_adjective.lookup
         self._word = word
@@ -52,31 +52,26 @@ class Adjective(object) :
                     if polarity!="*" and p[0]!=polarity : continue
                     for f in p[1].items() :
                         if form!="*" and f[0]!=form : continue
-                        if t[0] not in self._forms : self._forms[t[0]] = Bundle()
-                        if p[0] not in self._forms[t[0]] : self._forms[t[0]][p[0]] = Bundle()
-                        if f[0] not in self._forms[t[0]][p[0]] : self._forms[t[0]][p[0]][f[0]] = f[1](self._word)
+                        f[1](self._word, self._forms)
             return
         
         lookup = lookup[type]
-        if type not in self._forms : self._forms[type] = Bundle()
 
         if polarity=="*" :
             for p in lookup.items() :
                 for f in p[1].items() :
                     if form!="*" and f[0]!=form : continue
-                    if p[0] not in self._forms[type] : self._forms[type][p[0]] = Bundle()
-                    if f[0] not in self._forms[type][p[0]] : self._forms[type][p[0]][f[0]] = f[1](self._word)
+                    f[1](self._word, self._forms)
             return
         
         lookup = lookup[polarity]
-        if polarity not in self._forms[type] : self._forms[type][polarity] = Bundle()
         
         if form=="*" :
             for f in lookup.items() :
-                if f[0] not in self._forms[type][polarity] : self._forms[type][polarity][f[0]] = f[1](self._word)
+                f[1](self._word, self._forms)
             return
         
-        if form not in self._forms[type][polarity] : self._forms[type][polarity][form] = lookup[form](self._word)
+        lookup[form](self._word, self._forms)
 
 class Verb(object) :
     def __init__(self, word:str, ichidan:bool=False, conjugateAll:bool=False) :
@@ -110,9 +105,7 @@ class Verb(object) :
                     if polarity!="*" and p[0]!=polarity : continue
                     for f in p[1].items() :
                         if form!="*" and f[0]!=form : continue
-                        if t[0] not in self._forms : self._forms[t[0]] = Bundle()
-                        if p[0] not in self._forms[t[0]] : self._forms[t[0]][p[0]] = Bundle()
-                        if f[0] not in self._forms[t[0]][p[0]] : self._forms[t[0]][p[0]][f[0]] = f[1](self._word)
+                        f[1](self._word, self._forms)
             return
         
         lookup = lookup[type]
@@ -122,8 +115,7 @@ class Verb(object) :
             for p in lookup.items() :
                 for f in p[1].items() :
                     if form!="*" and f[0]!=form : continue
-                    if p[0] not in self._forms[type] : self._forms[type][p[0]] = Bundle()
-                    if f[0] not in self._forms[type][p[0]] : self._forms[type][p[0]][f[0]] = f[1](self._word)
+                    f[1](self._word, self._forms)
             return
         
         lookup = lookup[polarity]
@@ -131,7 +123,7 @@ class Verb(object) :
         
         if form=="*" :
             for f in lookup.items() :
-                if f[0] not in self._forms[type][polarity] : self._forms[type][polarity][f[0]] = f[1](self._word)
+                f[1](self._word, self._forms)
             return
         
-        if form not in self._forms[type][polarity] : self._forms[type][polarity][form] = lookup[form](self._word)
+        lookup[form](self._word, self.forms)
