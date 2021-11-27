@@ -22,6 +22,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from typing import Dict
+
+
 def dict_unpack(d:dict) :
     for v in d.values() :
         if isinstance(v, Bundle) :
@@ -79,3 +82,10 @@ class Bundle(dict):
             if not isinstance(ptr[k], dict) : return ptr[k]
             ptr = ptr[k]
         return ptr.setdefault(k, None)
+    
+    def assert_equal(self, other:dict) :
+        keys = set().union(self.keys()).union(other.keys())
+        for k in keys :
+            assert k in self and k in other, k
+            if isinstance(self[k], Bundle) : self[k].assert_equal(other[k])
+            else : assert self[k]==other[k], str(k)+': '+str(self[k])+' '+str(other[k])

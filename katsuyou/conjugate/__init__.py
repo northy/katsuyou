@@ -44,6 +44,9 @@ class Adjective(object) :
         return self._forms
     
     def conjugate(self, type:str="*", polarity:str="*", form:str="*") :
+        if self._word.endswith("いい") or self._word.endswith("良い") :
+            self._forms.update(irregular.II(self._word))
+        
         lookup = self._lookup
 
         if type=="*" :
@@ -94,8 +97,13 @@ class Verb(object) :
     
     def conjugate(self, type:str="*", polarity:str="*", form:str="*") :
         if self._word.endswith("する") or self._word.endswith("為る") :
-            self._forms = irregular.SURU(self._word)
-            return
+            self._forms.update(irregular.SURU(self._word))
+            self._lookup = ichidan_verb.lookup
+        elif self._word.endswith("くる") or self._word.endswith("来る") :
+            self._forms.update(irregular.KURU(self._word))
+            self._lookup = ichidan_verb.lookup
+        elif self._word.endswith("御座る") or self._word.endswith("ござる") or self._word.endswith("ご座る") :
+            self._forms.update(irregular.GOZARU(self._word))
 
         lookup = self._lookup
 
