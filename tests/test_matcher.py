@@ -32,24 +32,58 @@ from katsuyou import conjugate
 from katsuyou.util import matcher
 from queue import Queue
 
-def test_app() :
-    adjective = conjugate.Adjective("短い", True)
-    verb_ichidan = conjugate.Verb("いる", True, True)
-    verb_godan = conjugate.Verb("すます", False, True)
+def test_matcher() :
+    word1 = conjugate.Verb("表示する", conjugateAll=True)
+    word2 = conjugate.Verb("する", conjugateAll=True)
 
-    dictionary = list(adjective.forms.unpack())+list(verb_ichidan.forms.unpack())+list(verb_godan.forms.unpack())
+    dictionary = ["表示"]+list(word1.forms.unpack())+list(word2.forms.unpack())
     m = matcher.Matcher(words=dictionary)
-    string = "すましていてもいるよ"
+    string = "表示しますしているし表示した表示"
     expected = Queue()
-    expected.put((0,4))
-    expected.put((4,6))
-    expected.put((7,9))
-    i = 0
-    for s,e in m.longest_matches(string) :
-        print(s,e,string[s:e])
+    expected.put((0,2)) #表示
+    expected.put((0,3)) #表示し
+    expected.put((2,3)) #し
+    expected.put((0,5)) #表示します
+    expected.put((2,5)) #します
+    expected.put((5,6)) #し
+    expected.put((5,7)) #して
+    expected.put((5,9)) #している
+    expected.put((9,10)) #し
+    expected.put((10,12)) #表示
+    expected.put((10,13)) #表示し
+    expected.put((12,13)) #し
+    expected.put((10,14)) #表示した
+    expected.put((12,14)) #した
+    expected.put((14,16)) #表示
+    for s,e in m.matches(string) :
+        assert not expected.empty(), "Missing: "+str(s)+' '+str(e)+' '+string[s:e]
         exp = expected.get()
-        assert (s,e) == exp
-    assert expected.empty()
+        assert (s,e) == exp, "Return/Expected: "+str(s)+' '+str(e)+' '+string[s:e]+' - '+' '+str(exp[0])+' '+str(exp[1])+' '+string[exp[0]:exp[1]]
+    assert expected.empty(), "Not enough returns"
+    if DEBUG : print("OK")
+
+def test_longest_matches() :
+    word1 = conjugate.Verb("表示する", conjugateAll=True)
+    word2 = conjugate.Verb("する", conjugateAll=True)
+
+    dictionary = ["表示"]+list(word1.forms.unpack())+list(word2.forms.unpack())
+    m = matcher.Matcher(words=dictionary)
+    string = "表示しますしているし表示した表示"
+    expected = Queue()
+    expected.put((0,5)) #表示します
+    expected.put((5,9)) #している
+    expected.put((9,10)) #し
+    expected.put((10,14)) #表示した
+    expected.put((14,16)) #表示
+    for s,e in m.longest_matches(string) :
+        assert not expected.empty(), "Missing: "+str(s)+' '+str(e)+' '+string[s:e]
+        exp = expected.get()
+        assert (s,e) == exp, "Return/Expected: "+str(s)+' '+str(e)+' '+string[s:e]+' - '+' '+str(exp[0])+' '+str(exp[1])+' '+string[exp[0]:exp[1]]
+    assert expected.empty(), "Not enough returns"
+    if DEBUG : print("OK")
 
 if __name__=="__main__" :
-    test_app()
+    if DEBUG : print("---MATCHES---")
+    test_matcher()
+    if DEBUG : print("---LONGEST MATCHES---")
+    test_longest_matches()
