@@ -2,6 +2,7 @@
 
 [![Tests](https://github.com/northy/katsuyou/actions/workflows/main.yaml/badge.svg)](https://github.com/northy/katsuyou/actions/workflows/main.yaml)
 [![PyPI version](https://badge.fury.io/py/katsuyou.svg)](https://badge.fury.io/py/katsuyou)
+[![Downloads](https://pepy.tech/badge/katsuyou)](https://pepy.tech/project/katsuyou)
 
 Python japanese toolkit.
 

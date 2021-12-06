@@ -161,6 +161,19 @@ def test_ii() :
 
     c.forms.assert_equal(expected)
 
+def test_aru() :
+    expected = {'stem': {'neutral': {'te_form': 'あって', 'a_stem': 'あら', 'i_stem': 'あり', 'e_stem': 'あれ', 'o_stem': 'あろ'}}, 'plain': {'positive': {'nonpast': 'ある', 'past': 'あった', 'optative': 'ありたい', 'past_optative': 'ありたかった', 'optative_te_form': 'ありたくて', 'volitional': 'あろう', 'ba_conditional': 'あれば', 'tara_conditional': 'あったら', 'receptive': 'あられる', 'causative': 'あらせる', 'potential': 'あれる', 'imperative': 'あれ', 'progressive': 'あっている', 'past_progressive': 'あっていた', 'past_presumptive': 'あったろう'}, 'negative': {'nonpast': 'ない', 'past': 'なかった', 'optative': 'ありたくない', 'past_optative': 'ありたくなかった', 'optative_te_form': 'ありたくなくて', 'ba_conditional': 'なければ', 'tara_conditional': 'なかったら', 'receptive': 'あられない', 'causative': 'あらせない', 'potential': 'あれない', 'imperative': 'あるな', 'progressive': 'あっていない', 'past_progressive': 'あっていなかった'}}, 'polite': {'positive': {'nonpast': 'あります', 'past': 'ありました', 'volitional': 'ありましょう', 'tara_conditional': 'ありましたら', 'receptive': 'あられます', 'causative': 'あらせます', 'potential': 'あれます', 'progressive': 'あっています', 'past_progressive': 'あっていました'}, 'negative': {'nonpast': 'ありますせん', 'past': 'ありますせんでした', 'optative': 'ありたくありません', 'tara_conditional': 'ありますせんでしたら', 'receptive': 'あられません', 'causative': 'あらせません', 'potential': 'あれません', 'imperative': 'ないで', 'progressive': 'あっていません', 'past_progressive': 'あっていませんでした'}}}
+
+    c = conjugate.Verb("ある", False, True)
+    
+    c.forms.assert_equal(expected)
+
+    expected = {'plain': {'negative': {'nonpast': '無い', 'past': '無かった', 'optative': '在りたくない', 'past_optative': '在りたくなかった', 'optative_te_form': '在りたくなくて', 'ba_conditional': '無ければ', 'tara_conditional': '無かったら', 'receptive': '在られない', 'causative': '在らせない', 'potential': '在れない', 'imperative': '在るな', 'progressive': '在っていない', 'past_progressive': '在っていなかった'}, 'positive': {'nonpast': '在る', 'past': '在った', 'optative': '在りたい', 'past_optative': '在りたかった', 'optative_te_form': '在りたくて', 'volitional': '在ろう', 'ba_conditional': '在れば', 'tara_conditional': '在ったら', 'receptive': '在られる', 'causative': '在らせる', 'potential': '在れる', 'imperative': '在れ', 'progressive': '在っている', 'past_progressive': '在っていた', 'past_presumptive': '在ったろう'}}, 'stem': {'neutral': {'te_form': '在って', 'a_stem': '在ら', 'i_stem': '在り', 'e_stem': '在れ', 'o_stem': '在ろ'}}, 'polite': {'positive': {'nonpast': '在ります', 'past': '在りました', 'volitional': '在りましょう', 'tara_conditional': '在りましたら', 'receptive': '在られます', 'causative': '在らせます', 'potential': '在れます', 'progressive': '在っています', 'past_progressive': '在っていました'}, 'negative': {'nonpast': '在りますせん', 'past': '在りますせんでした', 'optative': '在りたくありません', 'tara_conditional': '在りますせんでしたら', 'receptive': '在られません', 'causative': '在らせません', 'potential': '在れません', 'imperative': '無いで', 'progressive': '在っていません', 'past_progressive': '在っていませんでした'}}}
+
+    c = conjugate.Verb("在る", False, True)
+    
+    c.forms.assert_equal(expected)
+
 if __name__=="__main__" :
     test_ichidan()
     test_adjective()
@@ -179,3 +192,4 @@ if __name__=="__main__" :
     test_gozaru()
     test_kuru()
     test_ii()
+    test_aru()
