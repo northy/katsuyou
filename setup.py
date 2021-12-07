@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="katsuyou",
-    version="0.1.3",
+    version="0.1.4b1",
     description="Python japanese toolkit",
     long_description=README,
     long_description_content_type="text/markdown",
