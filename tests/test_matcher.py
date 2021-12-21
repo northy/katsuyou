@@ -82,8 +82,36 @@ def test_longest_matches() :
     assert expected.empty(), "Not enough returns"
     if DEBUG : print("OK")
 
+def test_1() :
+    word1 = conjugate.Adjective("ぞろい", True)
+    word2 = conjugate.Adjective("揃い", True)
+    dictionary = list(word1.forms.unpack())+list(word2.forms.unpack())
+    m = matcher.Matcher(words=dictionary)
+
+    string = "あのチームはつわものぞろいだ"
+    expected = Queue()
+    expected.put((10,13)) #ぞろい
+    for s,e in m.longest_matches(string) :
+        assert not expected.empty(), "Missing: "+str(s)+' '+str(e)+' '+string[s:e]
+        exp = expected.get()
+        assert (s,e) == exp, "Return/Expected: "+str(s)+' '+str(e)+' '+string[s:e]+' - '+' '+str(exp[0])+' '+str(exp[1])+' '+string[exp[0]:exp[1]]
+    assert expected.empty(), "Not enough returns"
+
+    string = "みなさまがお揃いになったので、送別会を始められます"
+    expected = Queue()
+    expected.put((6,8)) #揃い
+    for s,e in m.longest_matches(string) :
+        assert not expected.empty(), "Missing: "+str(s)+' '+str(e)+' '+string[s:e]
+        exp = expected.get()
+        assert (s,e) == exp, "Return/Expected: "+str(s)+' '+str(e)+' '+string[s:e]+' - '+' '+str(exp[0])+' '+str(exp[1])+' '+string[exp[0]:exp[1]]
+    assert expected.empty(), "Not enough returns"
+
+    if DEBUG : print("OK")
+
 if __name__=="__main__" :
     if DEBUG : print("---MATCHES---")
     test_matcher()
     if DEBUG : print("---LONGEST MATCHES---")
     test_longest_matches()
+    if DEBUG : print("---TEST 1---")
+    test_1()
