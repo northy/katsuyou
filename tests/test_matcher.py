@@ -40,25 +40,26 @@ def test_matcher() :
     m = matcher.Matcher(words=dictionary)
     string = "表示しますしているし表示した表示"
     expected = Queue()
-    expected.put((0,2)) #表示
-    expected.put((0,3)) #表示し
-    expected.put((2,3)) #し
-    expected.put((0,5)) #表示します
-    expected.put((2,5)) #します
-    expected.put((5,6)) #し
-    expected.put((5,7)) #して
-    expected.put((5,9)) #している
-    expected.put((9,10)) #し
-    expected.put((10,12)) #表示
-    expected.put((10,13)) #表示し
-    expected.put((12,13)) #し
-    expected.put((10,14)) #表示した
-    expected.put((12,14)) #した
-    expected.put((14,16)) #表示
+    expected.put([(0,2), "表示"])
+    expected.put([(0,3), "表示し"])
+    expected.put([(2,3), "し"])
+    expected.put([(0,5), "表示します"])
+    expected.put([(2,5), "します"])
+    expected.put([(5,6), "し"])
+    expected.put([(5,7), "して"])
+    expected.put([(5,9), "している"])
+    expected.put([(9,10), "し"])
+    expected.put([(10,12), "表示"])
+    expected.put([(10,13), "表示し"])
+    expected.put([(12,13), "し"])
+    expected.put([(10,14), "表示した"])
+    expected.put([(12,14), "した"])
+    expected.put([(14,16), "表示"])
     for s,e in m.matches(string) :
         assert not expected.empty(), "Missing: "+str(s)+' '+str(e)+' '+string[s:e]
-        exp = expected.get()
+        exp, exps = expected.get()
         assert (s,e) == exp, "Return/Expected: "+str(s)+' '+str(e)+' '+string[s:e]+' - '+' '+str(exp[0])+' '+str(exp[1])+' '+string[exp[0]:exp[1]]
+        assert string[s:e] == exps, "Return/Expected: "+string[s:e]+" - "+exps
     assert expected.empty(), "Not enough returns"
     if DEBUG : print("OK")
 
@@ -70,40 +71,44 @@ def test_longest_matches() :
     m = matcher.Matcher(words=dictionary)
     string = "表示しますしているし表示した表示"
     expected = Queue()
-    expected.put((0,5)) #表示します
-    expected.put((5,9)) #している
-    expected.put((9,10)) #し
-    expected.put((10,14)) #表示した
-    expected.put((14,16)) #表示
+    expected.put([(0,5), "表示します"])
+    expected.put([(5,9), "している"])
+    expected.put([(9,10), "し"])
+    expected.put([(10,14), "表示した"])
+    expected.put([(14,16), "表示"])
     for s,e in m.longest_matches(string) :
         assert not expected.empty(), "Missing: "+str(s)+' '+str(e)+' '+string[s:e]
-        exp = expected.get()
+        exp, exps = expected.get()
         assert (s,e) == exp, "Return/Expected: "+str(s)+' '+str(e)+' '+string[s:e]+' - '+' '+str(exp[0])+' '+str(exp[1])+' '+string[exp[0]:exp[1]]
+        assert string[s:e] == exps, "Return/Expected: "+string[s:e]+" - "+exps
     assert expected.empty(), "Not enough returns"
     if DEBUG : print("OK")
 
 def test_1() :
     word1 = conjugate.Adjective("ぞろい", True)
     word2 = conjugate.Adjective("揃い", True)
-    dictionary = list(word1.forms.unpack())+list(word2.forms.unpack())
+    word3 = conjugate.Adjective("そろい", True)
+    dictionary = list(word1.forms.unpack())+list(word2.forms.unpack())+list(word3.forms.unpack())
     m = matcher.Matcher(words=dictionary)
 
-    string = "あのチームはつわものぞろいだ"
+    string = "あのチームはつわものぞろいだ。"
     expected = Queue()
-    expected.put((10,13)) #ぞろい
+    expected.put([(10,13), "ぞろい"])
     for s,e in m.longest_matches(string) :
         assert not expected.empty(), "Missing: "+str(s)+' '+str(e)+' '+string[s:e]
-        exp = expected.get()
+        exp, exps = expected.get()
         assert (s,e) == exp, "Return/Expected: "+str(s)+' '+str(e)+' '+string[s:e]+' - '+' '+str(exp[0])+' '+str(exp[1])+' '+string[exp[0]:exp[1]]
+        assert string[s:e] == exps, "Return/Expected: "+string[s:e]+" - "+exps
     assert expected.empty(), "Not enough returns"
 
     string = "みなさまがお揃いになったので、送別会を始められます"
     expected = Queue()
-    expected.put((6,8)) #揃い
+    expected.put([(6,8), "揃い"])
     for s,e in m.longest_matches(string) :
         assert not expected.empty(), "Missing: "+str(s)+' '+str(e)+' '+string[s:e]
-        exp = expected.get()
+        exp, exps = expected.get()
         assert (s,e) == exp, "Return/Expected: "+str(s)+' '+str(e)+' '+string[s:e]+' - '+' '+str(exp[0])+' '+str(exp[1])+' '+string[exp[0]:exp[1]]
+        assert string[s:e] == exps, "Return/Expected: "+string[s:e]+" - "+exps
     assert expected.empty(), "Not enough returns"
 
     if DEBUG : print("OK")

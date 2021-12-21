@@ -163,7 +163,7 @@ class Matcher(object) :
                 automaton = self._trie_fl[automaton]
             
             if automaton==0 and curLongest!=0 :
-                start = i-self._trie_d[curLongest]
+                start = curLongestAttrib
                 end = start+self._trie_d[curLongest]
                 yield start, end
                 curLongest = 0
